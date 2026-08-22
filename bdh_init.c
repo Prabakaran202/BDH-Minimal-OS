@@ -29,8 +29,12 @@ int main() {
     }
 
     // 3. Engine-க்கு தேவையான Bash, Zsh மற்றும் Env Variables செட் செய்தல்
-    symlink("/bin/busybox", "/bin/bash");
-    symlink("/bin/busybox", "/bin/zsh");
+    // இப்போது நாம் Bash-ஐ 'sh' ஆப்லெட்டுக்கு லிங்க் செய்கிறோம் (இதனால் ஆப்லெட் not found வராது)
+    unlink("/bin/bash"); 
+    symlink("/bin/sh", "/bin/bash"); 
+    unlink("/bin/zsh");
+    symlink("/bin/sh", "/bin/zsh");
+    
     setenv("TERM", "linux", 1);
     setenv("PATH", "/bin:/sbin:/usr/bin:/usr/sbin", 1);
 
