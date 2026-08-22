@@ -46,6 +46,13 @@ else
     exit 1
 fi
 
+# --- NEW STEP: Add Custom Apps ---
+echo "[3.5/4] Adding Custom Apps (BDH Terminal Engine)..."
+if [ -d "custom_apps" ]; then
+    cp -r custom_apps/* $ROOTFS/bin/
+fi
+# ---------------------------------
+
 echo "[4/4] Packing initramfs..."
 cd $ROOTFS
 find . | cpio -ov -H newc | gzip -9 > ../initramfs.cpio.gz 2>/dev/null
