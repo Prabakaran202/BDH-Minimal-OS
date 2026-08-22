@@ -18,9 +18,15 @@ echo "[1/4] Preparing Root Filesystem..."
 rm -rf $ROOTFS initramfs.cpio.gz bdh-os.iso iso/
 mkdir -p $ROOTFS/{bin,dev,etc,proc,sys,root}
 
-# 2. C கோடை கம்பைல் செய்தல்
+# 2. C கோடை கம்பைல் செய்தல் (Termux Auto-detect)
 echo "[2/4] Compiling bdh_init.c..."
-gcc -static bdh_init.c -o $ROOTFS/init
+if command -v proot-distro &> /dev/null; then
+    echo "   -> Termux detected! Compiling via Alpine automatically..."
+    proot-distro login alpine -- sh -c "cd $PWD && gcc -static bdh_init.c -o $ROOTFS/init"
+else
+    gcc -static bdh_init.c -o $ROOTFS/init
+fi
+
 if [ $? -ne 0 ]; then
     echo "Error: Compilation failed!"
     exit 1
@@ -61,8 +67,8 @@ menuentry "BDH Minimal OS (x86_64)" {
 }
 EOF
     grub-mkrescue -o bdh-os.iso iso/ 2>/dev/null
-    echo -e "\n Success! 'bdh-os.iso' is ready for Ventoy!"
+    echo -e "\n✅ Success! 'bdh-os.iso' is ready for Ventoy!"
 else
-    echo -e "\n Success! ARM OS is ready."
+    echo -e "\n✅ Success! ARM OS is ready."
     echo "Run: qemu-system-aarch64 -M virt -cpu cortex-a53 -nographic -kernel bzImage-arm -initrd initramfs.cpio.gz -append \"console=ttyAMA0 init=/init\" -m 256M"
 fi
