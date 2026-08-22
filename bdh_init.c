@@ -15,11 +15,12 @@ int main() {
 
     // --- AUTOMATIC SETUP (சிஸ்டம் பூட் ஆகும்போதே நடக்கும் வேலைகள்) ---
     
-    // 1. /proc மற்றும் /sys போல்டரை ஆட்டோமேட்டிக்காக mount செய்ய
+    // 1. proc, sysfs மற்றும் devtmpfs (Hardware Devices) ஆட்டோமேட்டிக்காக mount செய்ய
     if (mount("proc", "/proc", "proc", 0, NULL) != 0) {
         printf("Warning: Failed to mount /proc\n");
     }
     mount("sysfs", "/sys", "sysfs", 0, NULL);
+    mount("devtmpfs", "/dev", "devtmpfs", 0, NULL); // ---> PTY வேலை செய்ய இது மிக முக்கியம் <---
 
     // 2. BDH Engine-க்கான PTY (Virtual Terminal) Mount செய்தல்
     mkdir("/dev/pts", 0755);
